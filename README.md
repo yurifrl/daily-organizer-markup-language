@@ -7,6 +7,8 @@ DPML is a lightweight, human-readable syntax for scheduling daily tasks and even
 The Day Planner Markup Language (DPML) brings structure and clarity to your daily scheduling, transforming chaotic agendas into well-organized plans.
 DPML uses symbols to define tasks. For example, set `* Team Meeting | 10:00 - 11:00` for a fixed time slot, or use `- Review Emails | p2` to fit email reviews flexibly into two pomodoros.
 
+The core principle of DPML is that it can be used as an AI Prompt or Interpreted Markup Language
+
 # Format
 
 ```markdown
@@ -22,24 +24,31 @@ DPML uses symbols to define tasks. For example, set `* Team Meeting | 10:00 - 11
 # Example
 
 ## Input
+
 ```markdown
 # Day 1 | 08:00 - 18:00
 
-## Tasks
-! Drin Water | 7am                              // Reminder to drink water once af 7am
-- Review Emails | p2                            // Allocates 2 pomodoros
-- Finish the Pull Request | 1h                  // Allocates 1h
+## Tasks 1
+
+! Drin Water | 7am                              <!-- Reminder to drink water once af 7am -->
+- Review Emails | p2                            <!-- Allocates 2 pomodoros -->
+- Finish the Pull Request | 1h                  <!-- Allocates 1h -->
+- Finish Puzzle | ai                            <!-- Uses AI to estimate time for completing a 100-piece puzzle -->
+    It's a a 100 pieces puzzle                  <!-- You can add extra context to any task, it will not be Printed but some helpers may use it -->
+* Team Meeting | 10:00 - 11:00                  <!-- Fixed time for a team meeting -->
+! Take a Break | 14:30                          <!-- Reminder to take a break at 14:30 -->
+& Go for a Walk | every 6h starting at 09:00    <!-- Recurrent task to walk every 6 hours -->
+
+## Tasks 1
+
+<!--You can Split in multiple Categories, they will be merged -->
 - Do the FreeCAD course | p2
 - Read Moby-Dick | 1h
 - Work on DOML | p4
-- Finish Puzzle | ai                            // Uses AI to estimate time for completing a 100-piece puzzle
-    It's a a 100 pieces puzzle                  // You can add extra context to any task, it will not be Printed but some helpers may use it
-* Team Meeting | 10:00 - 11:00                  // Fixed time for a team meeting
-! Take a Break | 14:30                          // Reminder to take a break at 14:30
-& Go for a Walk | every 6h starting at 09:00    // Recurrent task to walk every 6 hours
 ```
 
 ## Output
+
 ```markdown
 08:00 to 08:50  - Review Emails
 09:00 to 09:05  - Go for a Walk
@@ -57,6 +66,7 @@ DPML uses symbols to define tasks. For example, set `* Team Meeting | 10:00 - 11
 # Syntax
 
 ## Definitions
+
 - `-` **Flexible Task**: Automatically fits into the open slots of your schedule. Specify duration using Pomodoros (`p`) or explicit timing.
 - `*` **Fixed Task**: Occurs at a specific time. Provide exact start and optional end times. Defaults to one Pomodoro if end time is omitted.
 - `!` **Reminder**: Triggers notifications at specified times. No duration.
@@ -67,12 +77,22 @@ DPML uses symbols to define tasks. For example, set `* Team Meeting | 10:00 - 11
 Tasks are defined with a description followed by a `|` symbol, which is used to separate the task description from its parameters. Parameters can be given to helpers that take the subsequent parameter and parses it
 
 - **Pomodoro (`p`)**: Indicates the number of pomodoros a task should take. E.g., `p3`.
-- **Ai (`ai`)**: You can add this to let the ai choose for you, or add a long description bellow you taks
+- **Ai (`ai`)**: You can add this to let the ai choose for you, or add a long description bellow you task
 
-## Contribution
+## Sequential Format and Task Sorting Rules
+
+Tasks in DPML are sorted first by their start time. In cases where multiple tasks could start at the same time or overlap, the order of task entries in the document defines their priority. This means tasks listed earlier are prioritized over those listed later, ensuring a clear and manageable schedule.
+
+# Contribution
+
 Contributions are welcome. Please fork the repository, make changes, and submit a pull request.
 
-## License
-DPML is released under the MIT license. Details can be found in the LICENSE file.
+# License
 
+DPML is released under the MIT license. Details can be found in the LICENSE file.
 This README provides all the necessary information to understand and start using DPML efficiently in your daily planning.
+
+# TODO
+
+- [ ] Check how to fit https://github.com/tj/go-naturaldate
+- [ ] Implement
