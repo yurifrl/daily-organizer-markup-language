@@ -6,96 +6,62 @@ DayOrganizer Markup Language (DOML) is a Markdown-inspired language designed spe
 
 Below is an example DOML schedule that illustrates how to use DOML to organize a day:
 
-<!-- TODO: Find how to fit https://github.com/tj/go-naturaldate here-->
-
-```markdown
-
-# Day 1 | 14:00 - 23:00
-
-## Tasks 1
-- Organize notion | p2
-- Go to Gym | 07am
-- Watch Freecad videos | pomodoro 3
-* Team Meeting | range 15:30 to 16:30
-- Practice crimping SN-* Connectors | duration 1h
-! Take medicine | time 14:05
-! Eat a snack | 17:05
-& Standup | duration 30min, every 30 minutes
-
-## Tasks 2
-! Feed the dog | time 08:00
-! Feed the dog | time 12:00
-! Feed the dog | time 20:00
-
-
-```
+### Input
 
 ```markdown
 # Day 1 | 08:00 - 18:00
 
-## Tasks
-- Organize office | p2
-- Review project proposals | pomodoro 4
-- Draft report | pomodoro 3
-* Client Meeting | range 10:00 to 11:00
-* Team Sync | range 15:00 to 16:00
-! Take vitamins | time 08:05
-- Lunch break | 13:00 - 14:00
-- Overlapping | 17:00
-- Overlapping | 17:25
-
-! Coffee break | t15
-& Go for a Walk | 6h 
+## Tasks 1
+- Organize office | p2                              // Uses 'p' to denote the number of Pomodoros
+- Review project proposals | p4
+- Draft report | p3
+* Client Meeting | 10:00 - 11:00                    // Fixed time task with explicit start and end times -->
+* Team Sync | 15:00                                 // Fixed time task with a start time only, defaults to one Pomodoro duration (30 minutes total) -->
+! Take vitamins | 08:05                             // Reminder at a specific time, no duration -->
+- Lunch break | 1 hour at 13:00                     // Task with a specified duration starting at a specific time -->
+- Overlapping task | 30 min at 17:00                // Task with a specified short duration starting at a specific time -->
+- Overlapping task | 30 min at 17:25                // Another short duration task, starting shortly after the previous -->
+! Coffee break | 15:15                              // Reminder at a specific time, no duration -->
+& Go for a Walk | every 6 hours starting at 08:00   // Recurrent task, starts at 08:00 and repeats every 6 hours -->
+& Feed the birds | every 6 hours                    // Recurrent task, starts based on the day start (08:00) and repeats every 6 hours -->
 
 ## Tasks 2
-- Go to Gym | p2
-! Morning Meds | 7am
+* Go to Gym | 08:00 - 09:00                         // Fixed time task with explicit start and end times -->
+! Morning Meds | 07:00                              // Reminder at a specific time, no duration -->
 ```
 
 ### Output
 
 ```
+07:00           - Morning Meds
+08:00 to 08:30  - Go for a Walk
+08:00 to 08:30  - Feed the birds
+08:00 to 09:00  - Go to Gym
+08:05           - Take vitamins
+09:00 to 10:30  - Organize office
+10:00 to 11:00  - Client Meeting
+11:00 to 13:00  - Review project proposals
+13:00 to 14:00  - Lunch break
+14:00 to 14:30  - Go for a Walk
+14:00 to 14:30  - Feed the birds
+14:00 to 15:30  - Draft report
+15:00 to 15:30  - Team Sync
+15:15           - Coffee break
+17:00 to 17:30  - Overlapping task 1
+17:25 to 17:55  - Overlapping task 2
+20:00 to 20:30  - Go for a Walk
+20:00 to 20:30  - Feed the birds
 ```
 
-## Logic
-- Tasks with no end default to 1 pomodoro
+##  Syntax
 
-## Syntax
-
-DOML employs a straightforward syntax that utilizes various symbols to denote different types of tasks and events within your schedule. Each task type is prefixed by a specific symbol, making it easy to identify and categorize tasks at a glance. Here's a breakdown of the syntax and task types:
-
-### Task Definition Symbols
-
-- **`-` Regular Task**: This is the default task type, which typically requires a duration or count of pomodoros. If no specific time is given, it defaults to a pre-configured pomodoro setting.
-
-- **`*` Fixed Time Task**: For tasks that need to occur at a specific time or within a specific time range. You must provide a time range for these tasks.
-
-- **`!` Reminder**: These are time-specific alerts with no duration. They serve as reminders for fixed-time necessities throughout the day.
-
-- **`&` Recurrent Task**: Tasks that recur at a set interval throughout the designated schedule period. These usually default to a standard duration unless specified otherwise.
+- **Flexible Tasks (`-`)**: Tasks that need to be fitted into the schedule. They can specify a duration or a desired number of Pomodoros. If no time is specified, the system should assume a default duration (e.g., 30 minutes).
+- **Fixed Tasks (`*`)**: Tasks with a specific start and end time. These are non-movable within the schedule.
+- **Reminders (`!`)**: Time-specific alerts that do not necessarily block out time but remind you at the specified moment.
+- **Recurrent Tasks (`&`)**: Tasks that occur repeatedly throughout the designated schedule. These are set to recur based on a start time and frequency.
 
 ### Task Parameters
 
 After the task symbol, tasks are defined with a description followed by a `|` symbol, which is used to separate the task description from its parameters. Parameters are then specified to dictate the timing and duration of tasks. Here are the key functions and formats you can use:
 
-- **Pomodoro (`p`, `pomodoro`)**: Indicates the number of pomodoros (typically 25-minute blocks) a task should take. E.g., `pomodoro 3`.
-
-- **Duration (`d`, `duration`)**: Specifies the duration of the task. E.g., `duration 1h`.
-
-- **Range (`r`, `range`)**: Used for fixed time tasks to define a specific time range during which the task should occur. E.g., `range 15:30 to 16:30`.
-
-- **Time (`t`, `time`)**: Sets a specific time for reminders or fixed-time tasks. E.g., `time 14:05`.
-
-Parameters can be combined or used singularly based on the requirements of the task. The parser is designed to interpret these inputs based on the specified or default functions.
-
-
-## Available Configuration Options
-
--- 
-pomodoro_long_break: 20m   # Duration of long breaks after a set of pomodoros
-pomodoro_session_size: 30m # Default duration of a pomodoro session
-pomodoro_set: 4            # Number of pomodoros before a long break
-pomodoro_short_break: 5m   # Duration of short breaks between pomodoros
-task_separator: ", "       # Separator for task parameters
-time_format: 24h           # Time format for displaying tasks
---
+- **Pomodoro (`p`)**: Indicates the number of pomodoros (typically 25-minute blocks) a task should take. E.g., `p3`.
