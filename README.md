@@ -1,67 +1,78 @@
-# DayOrganizer Markup Language (DOML)
+# Day Planner Markup Language (DPML)
 
-DayOrganizer Markup Language (DOML) is a Markdown-inspired language designed specifically for creating and organizing daily schedules in an efficient and intuitive way. It combines the simplicity of Markdown's syntax with specific features that cater to daily planning, making it an ideal choice for anyone looking to streamline their day-to-day tasks.
+DPML is a lightweight, human-readable syntax for scheduling daily tasks and events.
 
-## Example
+## Description
 
-Below is an example DOML schedule that illustrates how to use DOML to organize a day:
+The Day Planner Markup Language (DPML) brings structure and clarity to your daily scheduling, transforming chaotic agendas into well-organized plans.
+DPML uses symbols to define tasks. For example, set `* Team Meeting | 10:00 - 11:00` for a fixed time slot, or use `- Review Emails | p2` to fit email reviews flexibly into two pomodoros.
 
-### Input
+# Format
 
+```markdown
+# Day X | Start Time - End Time
+
+## Tasks
+- Task Description | Time or Duration
+! Reminder | Time
+* Fixed Task | Time or Interval
+& Recurrent Task | Interval
+```
+
+# Example
+
+## Input
 ```markdown
 # Day 1 | 08:00 - 18:00
 
-## Tasks 1
-- Organize office | p2                              // Uses 'p' to denote the number of Pomodoros
-- Review project proposals | p4
-- Draft report | p3
-* Client Meeting | 10:00 - 11:00                    // Fixed time task with explicit start and end times -->
-* Team Sync | 15:00                                 // Fixed time task with a start time only, defaults to one Pomodoro duration (30 minutes total) -->
-! Take vitamins | 08:05                             // Reminder at a specific time, no duration -->
-- Lunch break | 1 hour at 13:00                     // Task with a specified duration starting at a specific time -->
-- Overlapping task | 30 min at 17:00                // Task with a specified short duration starting at a specific time -->
-- Overlapping task | 30 min at 17:25                // Another short duration task, starting shortly after the previous -->
-! Coffee break | 15:15                              // Reminder at a specific time, no duration -->
-& Go for a Walk | every 6 hours starting at 08:00   // Recurrent task, starts at 08:00 and repeats every 6 hours -->
-& Feed the birds | every 6 hours                    // Recurrent task, starts based on the day start (08:00) and repeats every 6 hours -->
-
-## Tasks 2
-* Go to Gym | 08:00 - 09:00                         // Fixed time task with explicit start and end times -->
-! Morning Meds | 07:00                              // Reminder at a specific time, no duration -->
+## Tasks
+! Drin Water | 7am                              // Reminder to drink water once af 7am
+- Review Emails | p2                            // Allocates 2 pomodoros
+- Finish the Pull Request | 1h                  // Allocates 1h
+- Do the FreeCAD course | p2
+- Read Moby-Dick | 1h
+- Work on DOML | p4
+- Finish Puzzle | ai                            // Uses AI to estimate time for completing a 100-piece puzzle
+    It's a a 100 pieces puzzle                  // You can add extra context to any task, it will not be Printed but some helpers may use it
+* Team Meeting | 10:00 - 11:00                  // Fixed time for a team meeting
+! Take a Break | 14:30                          // Reminder to take a break at 14:30
+& Go for a Walk | every 6h starting at 09:00    // Recurrent task to walk every 6 hours
 ```
 
-### Output
-
-```
-07:00           - Morning Meds
-08:00 to 08:30  - Go for a Walk
-08:00 to 08:30  - Feed the birds
-08:00 to 09:00  - Go to Gym
-08:05           - Take vitamins
-09:00 to 10:30  - Organize office
-10:00 to 11:00  - Client Meeting
-11:00 to 13:00  - Review project proposals
-13:00 to 14:00  - Lunch break
-14:00 to 14:30  - Go for a Walk
-14:00 to 14:30  - Feed the birds
-14:00 to 15:30  - Draft report
-15:00 to 15:30  - Team Sync
-15:15           - Coffee break
-17:00 to 17:30  - Overlapping task 1
-17:25 to 17:55  - Overlapping task 2
-20:00 to 20:30  - Go for a Walk
-20:00 to 20:30  - Feed the birds
+## Output
+```markdown
+08:00 to 08:50  - Review Emails
+09:00 to 09:05  - Go for a Walk
+09:00 to 09:30  - Finish the Pull Request
+09:30 to 11:00  - Do the FreeCAD course
+10:00 to 11:00  - Team Meeting
+11:00 to 12:00  - Work on DOML
+12:00 to 13:00  - Read Moby-Dick
+13:00 to 15:00  - Continue work on DOML
+14:30           - Take a Break
+15:00           - Finish Puzzle
+15:00 to 15:05  - Go for a Walk
 ```
 
-##  Syntax
+# Syntax
 
-- **Flexible Tasks (`-`)**: Tasks that need to be fitted into the schedule. They can specify a duration or a desired number of Pomodoros. If no time is specified, the system should assume a default duration (e.g., 30 minutes).
-- **Fixed Tasks (`*`)**: Tasks with a specific start and end time. These are non-movable within the schedule.
-- **Reminders (`!`)**: Time-specific alerts that do not necessarily block out time but remind you at the specified moment.
-- **Recurrent Tasks (`&`)**: Tasks that occur repeatedly throughout the designated schedule. These are set to recur based on a start time and frequency.
+## Definitions
+- `-` **Flexible Task**: Automatically fits into the open slots of your schedule. Specify duration using Pomodoros (`p`) or explicit timing.
+- `*` **Fixed Task**: Occurs at a specific time. Provide exact start and optional end times. Defaults to one Pomodoro if end time is omitted.
+- `!` **Reminder**: Triggers notifications at specified times. No duration.
+- `&` **Recurrent Task**: Repeats at defined intervals. Starts based on the schedule's start time or specified starting point.
 
-### Task Parameters
+## Helpers
 
-After the task symbol, tasks are defined with a description followed by a `|` symbol, which is used to separate the task description from its parameters. Parameters are then specified to dictate the timing and duration of tasks. Here are the key functions and formats you can use:
+Tasks are defined with a description followed by a `|` symbol, which is used to separate the task description from its parameters. Parameters can be given to helpers that take the subsequent parameter and parses it
 
-- **Pomodoro (`p`)**: Indicates the number of pomodoros (typically 25-minute blocks) a task should take. E.g., `p3`.
+- **Pomodoro (`p`)**: Indicates the number of pomodoros a task should take. E.g., `p3`.
+- **Ai (`ai`)**: You can add this to let the ai choose for you, or add a long description bellow you taks
+
+## Contribution
+Contributions are welcome. Please fork the repository, make changes, and submit a pull request.
+
+## License
+DPML is released under the MIT license. Details can be found in the LICENSE file.
+
+This README provides all the necessary information to understand and start using DPML efficiently in your daily planning.
