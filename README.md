@@ -1,8 +1,6 @@
 # Day Planner Markup Language (DPML)
 
-DPML is a lightweight, human-readable syntax for scheduling daily tasks and events.
-
-## Description
+DPML is a markdown inspired, human-readable syntax for scheduling daily tasks and events.
 
 The Day Planner Markup Language (DPML) brings structure and clarity to your daily scheduling, transforming chaotic agendas into well-organized plans.
 DPML uses symbols to define tasks. For example, set `* Team Meeting | 10:00 - 11:00` for a fixed time slot, or use `- Review Emails | p2` to fit email reviews flexibly into two pomodoros.
